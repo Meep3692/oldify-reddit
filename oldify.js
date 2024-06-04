@@ -5,6 +5,8 @@
 // @author       github.com/meep3692
 // @match        https://*.reddit.com/*
 // @icon         https://www.google.com/s2/favicons?sz=64&domain=greasyfork.org
+// @downloadURL  https://raw.githubusercontent.com/Meep3692/oldify-reddit/trunk/oldify.js
+// @updateURL    https://raw.githubusercontent.com/Meep3692/oldify-reddit/trunk/oldify.js
 // @grant        none
 // ==/UserScript==
 
