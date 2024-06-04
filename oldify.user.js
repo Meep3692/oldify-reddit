@@ -61,15 +61,7 @@ const onNav = () => {
             e.innerText = "";
             e.appendChild(img);
         });
-        //TODO: this fucks up hyperlinks in reddit comments, it's meant to fix previews in reddit posts.
-        //Find a better heuristic for determining the preview links
-        [...document.getElementsByTagName('a')].filter(e => ((e.innerText === e.href) && (e.href.indexOf("preview.redd.it") > -1))).forEach(e => {
-            let href = e.href;
-            let img = document.createElement('img');
-            img.src = href;
-            e.innerText = "";
-            e.appendChild(img);
-        });
+        mutated();
     }
 }
 
