@@ -1,6 +1,6 @@
 // ==UserScript==
 // @name         Oldify Reddit
-// @version      0.1
+// @version      0.2
 // @description  The beach that makes you old
 // @author       github.com/meep3692
 // @match        https://*.reddit.com/*
