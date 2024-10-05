@@ -55,7 +55,6 @@ function getIdLimit(elem, rem){
 
 let remaining = 0;
 
-let flat = {};
 let t1s = {};
 let t3s = {};
 
@@ -78,31 +77,6 @@ function readJson(json){
             }
         }
     }
-}
-
-function getFromJson(json, id){
-    console.log("List of length: " + json.length);
-    if(flat[id]) return flat[id];
-    for(let i = 0; i < json.length; i++){
-        let e = json[i];
-        if(e.data){
-            console.log("kind: " + e.kind + ", id: " + e.data.id);
-            if(e.data.id === id){
-                flat[id] = e;
-                return e;
-            }else{
-                if(e.data && e.data.children){
-                    let child = getFromJson(e.data.children, id);
-                    if(child) return child;
-                }
-                if(e.data.replies){
-                    let child = getFromJson(e.data.replies.data.children, id);
-                    if(child) return child;
-                }
-            }
-        }
-    }
-    return null;
 }
 
 async function commentUsertext(id){
@@ -131,15 +105,6 @@ async function getUsertext(mdElem){
         console.log("Can't find id for " + mdElem);
         return false;
     }
-    // let list = [];
-    // if(type == "t3") list = postJson[0].data.children;
-    // else if(type == "t1") list = postJson[1].data.children;
-    // else {
-    //     console.log("Unknown type for " + thingId);
-    //     return;
-    // }
-    // let entry = list.find((e) => e.data.id == id);
-    //let entry = getFromJson(postJson, id);
     let entry = null;
     if(type == "t3") entry = t3s[id];
     if(type == "t1") entry = t1s[id];
@@ -148,7 +113,6 @@ async function getUsertext(mdElem){
         if(type == "t1"){
             console.log("Getting comment usertext from comment json");
             return await commentUsertext(id);
-            //return false;
         }
         return false;
     }
@@ -172,10 +136,6 @@ async function fixMarkdown() {
             console.log(e);
             if(e.userText) writeMD(e.userText, e.elem)
         });
-    // let elem = [...document.getElementsByClassName("md")]
-    //     .filter((e) => !e.getAttribute("oldify-fixed-md"))[3];
-    // let usertext = await getUsertext(elem);
-    // writeMD(usertext, elem);
 }
 
 const onNav = () => {
