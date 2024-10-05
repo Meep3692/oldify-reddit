@@ -36,6 +36,44 @@ function getQueryVariable(variable) {
     return "";
 }
 
+function writeMD(mdtext, element){
+    let md = marked.parse(mdtext);
+    md = DOMPurify.sanitize(md);
+    element.innerHTML = md;
+}
+
+function getIdLimit(elem, rem){
+    if(!elem) return "";
+    if(rem <= 0) return "";
+    if(elem.id.startsWith("thing_")) return elem.id;
+    return getIdLimit(elem.parentElement, rem - 1);
+}
+
+function getUsertext(json, mdElem){
+    let thingId = getIdLimit(mdElem, 10);
+    let [_, type, id] = thingId.split("_");
+    let list = [];
+    if(type == "t3") list = json[0].data.children;
+    else if(type == "t1") list = json[1].data.children;
+    else {
+        console.log("Unknown type for " + thingId);
+        return;
+    }
+    let entry = list.find((e) => e.data.id == id);
+    if(!entry){
+        console.log("Could not find entry for " + thingId);
+        return false;
+    }
+    let content = "";
+    if(type == "t3") content = entry.data.selftext;
+    else if(type == "t1") content = entry.data.body;
+    else {
+        console.log("Don't know how to find content for " + thingId);
+        return false;
+    }
+    return content;
+}
+
 const onNav = () => {
     if(window.location.hostname == "www.reddit.com"){
         if(window.location.pathname.startsWith("/media")){
@@ -75,17 +113,10 @@ const onNav = () => {
                 return;
             }
             let json = await response.json();
-            console.log(json);
-            let id = json[0].data.children[0].data.id;
-            let selftext = json[0].data.children[0].data.selftext;
-            let md = marked.parse(selftext);
-            md = DOMPurify.sanitize(md);
-            let usertextElement = document.getElementById("thing_t3_" + id)
-                                          .getElementsByClassName("entry")[0]
-                                          .getElementsByClassName("expando")[0]
-                                          .getElementsByClassName("usertext-body")[0]
-                                          .getElementsByClassName("md")[0];
-            usertextElement.innerHTML = md;
+            [...document.getElementsByClassName("md")]
+                .map((e) => {return {elem: e, userText: getUsertext(json, e)}})
+                .filter((e) => e.userText)
+                .forEach((e) => writeMD(e.userText, e.elem));
         });
         mutated();
     }
