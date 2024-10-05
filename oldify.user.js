@@ -7,6 +7,7 @@
 // @icon         https://www.google.com/s2/favicons?sz=64&domain=greasyfork.org
 // @downloadURL  https://raw.githubusercontent.com/Meep3692/oldify-reddit/trunk/oldify.user.js
 // @updateURL    https://raw.githubusercontent.com/Meep3692/oldify-reddit/trunk/oldify.user.js
+// @require      https://cdn.jsdelivr.net/npm/marked/marked.min.js
 // @grant        none
 // ==/UserScript==
 
@@ -60,6 +61,24 @@ const onNav = () => {
             img.style = "width: 10vw";
             e.innerText = "";
             e.appendChild(img);
+        });
+        let jsonUrl = window.location;
+        if(jsonUrl.endsWith("/")){
+            jsonUrl = jsonUrl.slice(0, -1);
+        }
+        jsonUrl += ".json";
+        fetch(jsonUrl).then((response) => {
+            if(!response.ok){
+                console.log("Hey! Couldn't get json!");
+                console.log(response);
+                return;
+            }
+            let json = response.json();
+            let id = json[0].data.children[0].data.id;
+            let selftext = json[0].data.children[0].data.selftext;
+            let md = marked.parse(selftext);
+            let usertextElement = document.getElementById("thing_t3_" + id).getElementsByClassName("entry")[0].getElementsByClassName("expando")[0].getElementsByClassName("usertext-body")[0];
+            usertextElement.innerHTML = md;
         });
         mutated();
     }
