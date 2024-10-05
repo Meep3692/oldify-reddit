@@ -62,22 +62,27 @@ const onNav = () => {
             e.innerText = "";
             e.appendChild(img);
         });
-        let jsonUrl = window.location;
+        let jsonUrl = window.location.href;
         if(jsonUrl.endsWith("/")){
             jsonUrl = jsonUrl.slice(0, -1);
         }
         jsonUrl += ".json";
-        fetch(jsonUrl).then((response) => {
+        fetch(jsonUrl).then(async (response) => {
             if(!response.ok){
                 console.log("Hey! Couldn't get json!");
                 console.log(response);
                 return;
             }
-            let json = response.json();
+            let json = await response.json();
+            console.log(json);
             let id = json[0].data.children[0].data.id;
             let selftext = json[0].data.children[0].data.selftext;
             let md = marked.parse(selftext);
-            let usertextElement = document.getElementById("thing_t3_" + id).getElementsByClassName("entry")[0].getElementsByClassName("expando")[0].getElementsByClassName("usertext-body")[0];
+            let usertextElement = document.getElementById("thing_t3_" + id)
+                                          .getElementsByClassName("entry")[0]
+                                          .getElementsByClassName("expando")[0]
+                                          .getElementsByClassName("usertext-body")[0]
+                                          .getElementsByClassName("md")[0];
             usertextElement.innerHTML = md;
         });
         mutated();
