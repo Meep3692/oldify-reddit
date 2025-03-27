@@ -1,6 +1,6 @@
 // ==UserScript==
 // @name         Oldify Reddit
-// @version      0.2
+// @version      0.2.1
 // @description  The beach that makes you old
 // @author       github.com/meep3692
 // @match        https://*.reddit.com/*
@@ -41,7 +41,9 @@ let postJson = null;
 function writeMD(mdtext, element){
     console.log("Write " + mdtext + " to " + element);
     let md = marked.parse(mdtext);
+    console.log("Marked down: " + md);
     md = DOMPurify.sanitize(md);
+    console.log("Purified: " + md);
     element.innerHTML = md;
     element.setAttribute("oldify-fixed-md", true);
 }
@@ -109,9 +111,9 @@ async function getUsertext(mdElem){
     if(type == "t3") entry = t3s[id];
     if(type == "t1") entry = t1s[id];
     if(!entry){
-        console.log("Could not find entry for " + thingId);
+        console.log("[" + thingId + "]: " + "Could not find entry");
         if(type == "t1"){
-            console.log("Getting comment usertext from comment json");
+            console.log("[" + thingId + "]: " + "Getting comment usertext from comment json");
             return await commentUsertext(id);
         }
         return false;
@@ -120,10 +122,11 @@ async function getUsertext(mdElem){
     if(type == "t3") content = entry.data.selftext;
     else if(type == "t1") content = entry.data.body;
     else {
-        console.log("Don't know how to find content for " + thingId);
+        console.log("[" + thingId + "]: " + "Don't know how to find content");
         return false;
     }
-    console.log(content);
+    console.log("[" + thingId + "]: " + "Got content")
+    // console.log(content);
     return content;
 }
 
@@ -133,7 +136,6 @@ async function fixMarkdown() {
         .map(async (e) => {return {elem: e, userText: await getUsertext(e)}})
         .forEach(async (e) => {
             e = await e;
-            console.log(e);
             if(e.userText) writeMD(e.userText, e.elem)
         });
 }
