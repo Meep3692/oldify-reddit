@@ -39,11 +39,11 @@ function getQueryVariable(variable) {
 let postJson = null;
 
 function writeMD(mdtext, element){
-    console.log("Write " + mdtext + " to " + element);
+    console.log("Raw:\n" + mdtext);
     let md = marked.parse(mdtext);
-    console.log("Marked down: " + md);
+    console.log("Marked down:\n" + md);
     md = DOMPurify.sanitize(md);
-    console.log("Purified: " + md);
+    console.log("Purified:\n" + md);
     element.innerHTML = md;
     element.setAttribute("oldify-fixed-md", true);
 }
