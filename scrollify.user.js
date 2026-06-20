@@ -1,7 +1,7 @@
 // ==UserScript==
 // @name         Scrollify webtoons
 // @namespace    http://tampermonkey.net/
-// @version      1.1.0
+// @version      1.1.1
 // @description  The beach that lets you scroll
 // @author       github.com/meep3692
 // @match        https://www.webtoons.com/*
