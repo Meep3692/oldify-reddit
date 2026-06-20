@@ -19,10 +19,10 @@ function observe(elem, callback){
 
 (function() {
     'use strict';
-    observe(document.getElementById("wrap"), (e) => {
+    observe(document.body, (e) => {
         e.style = "";
     });
-    observe(document.body, (e) => {
+    observe(document.getElementById("wrap"), (e) => {
         e.className = "wrap";
     });
 })();
